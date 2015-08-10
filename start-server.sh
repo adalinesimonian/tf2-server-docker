@@ -7,11 +7,11 @@ cpcfg() {
 }
 
 if [ ! -f /tf2/cfg/server.cfg ]; then
-  G_HOSTNAME="TF2"
-  PORT=27015
-  SV_PURE=1
-  MAP="ctf_2fort"
-  MAXPLAYERS=24
+  G_HOSTNAME="${G_HOSTNAME:-TF2}"
+  PORT="${PORT:-27015}"
+  SV_PURE="${SV_PURE:-1}"
+  MAP="${MAP:-ctf_2fort}"
+  MAXPLAYERS="${MAXPLAYERS:-24}"
 fi
 
 cpcfg "server.cfg"
