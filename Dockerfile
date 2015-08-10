@@ -13,6 +13,7 @@ RUN tar -xvzf steamcmd_linux.tar.gz
 # Get TF2
 
 RUN mkdir /tf2
+RUN mkdir /tf2/cfg
 RUN /steamcmd/steamcmd.sh +login anonymous +force_install_dir /tf2 +app_update 232250 validate +quit
 
 # Setup Libs for TF2 SRCDS
@@ -23,13 +24,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install lib32ncu
 
 # Setup Container
 
-ENV G_HOSTNAME="TF2 Server"
-ENV SV_PURE="1"
-ENV MAXPLAYERS="24"
-ENV MAP="koth_nucleus"
-ENV PORT="27015"
-
 ADD start-server.sh /start-server.sh
 EXPOSE 27015/udp
 
+VOLUME ["/tf2/cfg"]
 CMD ["/bin/sh", "/start-server.sh"]
