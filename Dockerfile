@@ -2,25 +2,42 @@ FROM debian:jessie
 
 MAINTAINER Suchipi Izumi "me@suchipi.com"
 
-# SteamCMD and deps
+# Install dependencies
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install lib32gcc1 wget
-RUN mkdir /steamcmd
-WORKDIR /steamcmd
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install lib32gcc1 wget lib32ncurses5
+RUN mkdir -p /tf2/cfg
+
+# Set up user
+
+#RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
+RUN mkdir -p /home/srcds
+#RUN useradd -d /home/srcds -m -s /bin/bash srcds
+#RUN echo srcds:srcds | chpasswd
+#RUN echo 'srcds ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN groupadd -r srcds
+RUN useradd -r -g srcds srcds
+RUN chown -hR srcds:srcds /home/srcds
+#RUN chmod 777 /tmp
+USER srcds
+WORKDIR /home/srcds
+
+# Install SteamCMD
+
+RUN mkdir steamcmd
+WORKDIR /home/srcds/steamcmd
 RUN wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz
 RUN tar -xvzf steamcmd_linux.tar.gz
 
 # Get TF2
 
-RUN mkdir /tf2
-RUN mkdir /tf2/cfg
-RUN /steamcmd/steamcmd.sh +login anonymous +force_install_dir /tf2 +app_update 232250 validate +quit
+RUN mkdir /home/srcds/tf2
+RUN ./steamcmd.sh +login anonymous +force_install_dir /home/srcds/tf2 +app_update 232250 validate +quit
 
 # Setup Libs for TF2 SRCDS
 
-RUN mkdir -p /root/.steam/sdk32
-RUN cp /steamcmd/linux32/steamclient.so /root/.steam/sdk32/steamclient.so
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install lib32ncurses5
+WORKDIR /home/srcds
+RUN mkdir -p .steam/sdk32
+RUN cp /home/srcds/steamcmd/linux32/steamclient.so .steam/sdk32/steamclient.so
 
 # Setup Container
 
@@ -28,4 +45,4 @@ ADD start-server.sh /start-server.sh
 EXPOSE 27015/udp
 
 VOLUME ["/tf2/cfg"]
-CMD ["/bin/sh", "/start-server.sh"]
+CMD ["/bin/bash", "/start-server.sh"]

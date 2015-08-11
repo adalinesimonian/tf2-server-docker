@@ -1,23 +1,29 @@
 #!/bin/bash
 
-cpcfg() {
-  if [ -f /tf2/cfg/$1 ]; then
-    cp /tf2/cfg/$1 /tf2/tf/cfg/$1
-  fi
-}
+if [ -f /tf2/cfg/mapcycle.txt ]; then
+  start_map="/tf2/cfg/mapcycle.txt"
+else
+  start_map="/home/srcds/tf2/tf/cfg/mapcycle_default.txt"
+fi
+
+while read -r line; do
+  line=$(echo "$line" | tr -d '\r')
+  [[ -z "${line// }" ]] && continue
+  [[ "$line" =~ ^//.*$ ]] && continue
+  start_map=$line
+  break
+done < "$start_map"
 
 if [ ! -f /tf2/cfg/server.cfg ]; then
   G_HOSTNAME="${G_HOSTNAME:-TF2}"
-  PORT="${PORT:-27015}"
   SV_PURE="${SV_PURE:-1}"
-  MAP="${MAP:-ctf_2fort}"
-  MAXPLAYERS="${MAXPLAYERS:-24}"
 fi
 
-cpcfg "server.cfg"
-cpcfg "mapcycle.txt"
-cpcfg "motd.txt"
-cpcfg "motd_text.txt"
+PORT="${PORT:-27015}"
+MAP="${MAP:-$start_map}"
+MAXPLAYERS="${MAXPLAYERS:-24}"
+
+cp -r /tf2/cfg/* /home/srcds/tf2/tf/cfg/
 
 srcds_args=""
 
@@ -46,6 +52,6 @@ if [ $MAP ]; then
 fi
 
 while true; do
-  /tf2/srcds_run -game tf -norestart ${srcds_args}
+  /home/srcds/tf2/srcds_run -game tf -norestart ${srcds_args}
 done
 
