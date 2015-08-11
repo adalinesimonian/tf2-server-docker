@@ -37,7 +37,7 @@ RUN cp /home/srcds/steamcmd/linux32/steamclient.so .steam/sdk32/steamclient.so
 # Setup Container
 
 ADD start-server.sh /start-server.sh
-EXPOSE 27015/udp
+EXPOSE 27015/tcp 27015/udp
 
 VOLUME ["/tf2/cfg"]
 CMD ["/bin/bash", "/start-server.sh"]
