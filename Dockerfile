@@ -9,15 +9,10 @@ RUN mkdir -p /tf2/cfg
 
 # Set up user
 
-#RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
 RUN mkdir -p /home/srcds
-#RUN useradd -d /home/srcds -m -s /bin/bash srcds
-#RUN echo srcds:srcds | chpasswd
-#RUN echo 'srcds ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN groupadd -r srcds
 RUN useradd -r -g srcds srcds
 RUN chown -hR srcds:srcds /home/srcds
-#RUN chmod 777 /tmp
 USER srcds
 WORKDIR /home/srcds
 
