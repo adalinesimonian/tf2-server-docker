@@ -2,7 +2,7 @@
 tf2-server-docker
 ==================
 
-This is a set of a Dockerfile and a script that will create a container that runs a [Team Fortress 2](http://www.garrysmod.com/) Server. 
+Dockerfile and script that will create a container that runs a [Team Fortress 2](http://www.garrysmod.com/) Server. 
 
 ### Examples
 
