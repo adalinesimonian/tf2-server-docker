@@ -4,16 +4,17 @@ tf2-server-docker
 
 Dockerfile and script that will create a container that runs a [Team Fortress 2](http://www.garrysmod.com/) Server. 
 
-### Examples
+## Examples
 
 Start a server on port 27015:
 
 `docker run -d -p 27015:27015/udp suchipi/tf2-server`
 
 
-### Notes
+## Notes
 
-######Environment Variables
+### Environment Variables
+
 You can set the environment variables `MAXPLAYERS`, `MAP`, `G_HOSTNAME`, `SV_PURE` and `ARGS` to change the startup arguments to the srcds_run command. For example:
 
 `docker run -d -P -e MAXPLAYERS=32 -e MAP=ctf_2fort -e SV_PURE=0 -e G_HOSTNAME="CTF 2FORT Server" -e ARGS="-insecure +exec something.cfg" suchipi/tf2-server`
@@ -30,7 +31,8 @@ The defaults for the environment variables are as follows:
 
 The `ARGS` variable is just added into the run command, right before the map is set with +map.
 
-######Master Servers
+### Master Servers
+
 The Source Engine doesn't seem to find out which port it's *actually* running on, so it tells the master servers that it's running on 27015 (or whatever `-port` you specified at runtime) even if you assign with `-P` dynamically. I've explored several potential solutions to this but the bottom line is that the Source Engine Dedicated Server wasn't really set up with this type of NATing in mind (or maybe, for that matter, any type of NAT). If you want this piece to work properly, you should probably just use the same port on the docker host as within the container. 
 
 The main thing that this affects is that if player A tries to join player B through Steam, Steam will tell player A to connect to port 27015 (the port the master server reports) even if player B is truly connected to a different port. This also affects `steam://connect/` links.
@@ -41,5 +43,6 @@ To use a port other than 27015 both within and outside the container, you could 
 
 which tells srcds inside the container to bind to 27016, and then forwards the internal 27016 to your external 27016.
 
-######Other
+### Other
+
 `build.sh` is just a convenience script; it isn't used by the Dockerfile.
